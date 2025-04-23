@@ -10,9 +10,12 @@ class CheckApiKey
 {
     public function handle(Request $request, Closure $next)
     {
+       
+
         $apiKey = $request->header('X-API-KEY');
 
-        if ($apiKey !== config('app.api_key')) {
+
+       if ($apiKey !== config('app.api_key')) {
             return response()->json(['message' => 'Invalid API key'], 401);
         }
 

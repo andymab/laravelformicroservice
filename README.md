@@ -53,6 +53,33 @@ Body:
   "token": "eyJ0eXAiOiJKV1QiLCJhbGci..."
 }
 ```
+Используется Laravel Sanctum для access_token.
+
+refresh_token генерируется вручную и хранится в базе данных (в поле users.refresh_token).
+ Проверка токенов
+/api/login: доступен через middleware apikey.
+
+Требует заголовок X-API-KEY.
+
+/api/refresh и /api/user: доступны только с auth:sanctum.
+
+Используют access_token, полученный после логина.
+
+Роутинг (routes/api.php)
+```php
+Route::middleware(['apikey'])->group(function () {
+    Route::post('/login', [LoginController::class, 'login']);
+});
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/refresh', [LoginController::class, 'refresh']);
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->user());
+    });
+});
+
+```
+
 
 Шаг 2: Защищённые запросы
 Добавляй Authorization: Bearer <token> и X-API-KEY в заголовки всех защищённых запросов.
